@@ -1,0 +1,40 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  base_url: ""
+
+data:
+  dir: "./data"
+  db_name: "notemg.db"
+  notes_dir: "notes"
+  attachments_dir: "attachments"
+  index_dir: "index"
+
+auth:
+  jwt_secret: "change-me-to-a-random-secret"
+  token_expire: "72h"
+  refresh_expire: "168h"
+  bcrypt_cost: 12
+  max_login_attempts: 5
+  lock_duration: "15m"
+
+editor:
+  autosave_interval: 1000
+  default_mode: "ir"
+  tab_size: 4
+  theme: "dark"
+
+security:
+  enable_https: false
+  cert_file: ""
+  key_file: ""
+  csrf_enabled: true
+  rate_limit: 60
+
+plugins:
+  enabled: []
+  dir: "./plugins"
+
+log:
+  level: "info"
+  format: "text"

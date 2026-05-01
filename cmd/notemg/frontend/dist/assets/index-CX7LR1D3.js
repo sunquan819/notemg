@@ -263,32 +263,30 @@ window.addEventListener("message", (e) => {
       <button class="btn btn-ghost btn-sm" id="btn-delete" title="Delete" style="color:var(--danger)">&#x1F5D1;</button>
     `;const B=document.createElement("div");return B.className="editor-container",B.id="vditor",L.appendChild(x),L.appendChild(B),requestAnimationFrame(()=>{this.initVditor(B),this.bindToolbarEvents(x,L)}),L}initVditor(L){var x;if(Ge)try{Ge.destroy()}catch{}Ge=new Ni(L.id,{height:"100%",mode:"ir",theme:"dark",icon:"ant",placeholder:"Start writing...",value:((x=this.note)==null?void 0:x.content)||"",cache:{enable:!1},toolbar:["headings","bold","italic","strike","|","list","ordered-list","check","outdent","indent","|","quote","code","inline-code","|","link","upload","table","|","undo","redo","|","fullscreen","edit-mode"],upload:{url:"/api/attachments/upload",headers:{Authorization:`Bearer ${localStorage.getItem("access_token")}`},accept:"image/*",handler:async B=>{for(const N of B)try{const Z=await this.api.upload("/attachments/upload",N),O=`![${N.name}](/api/attachments/${Z.id})
 `;Ge==null||Ge.insertValue(O)}catch(Z){console.error("Upload failed:",Z)}return null}},input:B=>{this.scheduleSave(B)},after:()=>{var B;Ge==null||Ge.setValue(((B=this.note)==null?void 0:B.content)||"",!0)}})}scheduleSave(L){Xt&&clearTimeout(Xt),Xt=setTimeout(()=>{this.doSave(L)},1e3)}async doSave(L){if(this.noteId)try{const x=this.extractTitle(L);this.note=await this.api.updateNote(this.noteId,{content:L,title:x})}catch(x){console.error("Auto-save failed:",x)}}extractTitle(L){const x=L.split(`
-`);for(const B of x){const N=B.trim();if(N.startsWith("# "))return N.slice(2).trim()}return""}bindToolbarEvents(L,x){var N,Z;const B=L.querySelector(".note-title");B==null||B.addEventListener("change",async()=>{if(this.noteId)try{this.note=await this.api.updateNote(this.noteId,{title:B.value})}catch(O){console.error("Title update failed:",O)}}),(N=L.querySelector("#btn-export"))==null||N.addEventListener("click",async()=>{if(this.noteId)try{await this.api.exportNote(this.noteId,"markdown")}catch(O){alert("Export failed: "+O.message)}}),(Z=L.querySelector("#btn-delete"))==null||Z.addEventListener("click",async()=>{if(this.noteId&&confirm("Are you sure you want to delete this note?"))try{await this.api.deleteNote(this.noteId),window.location.hash="#/editor"}catch(O){alert("Delete failed: "+O.message)}})}escapeHtml(L){return L.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}}class Pi{constructor(L,x){me(this,"api");me(this,"router");me(this,"initialized",!1);this.api=L,this.router=x}async render(){const L=await this.api.getAuthStatus().catch(()=>({initialized:!1}));this.initialized=(L==null?void 0:L.initialized)??!1;const x=document.createElement("div");return x.className="login-view",x.innerHTML=`
+`);for(const B of x){const N=B.trim();if(N.startsWith("# "))return N.slice(2).trim()}return""}bindToolbarEvents(L,x){var N,Z;const B=L.querySelector(".note-title");B==null||B.addEventListener("change",async()=>{if(this.noteId)try{this.note=await this.api.updateNote(this.noteId,{title:B.value})}catch(O){console.error("Title update failed:",O)}}),(N=L.querySelector("#btn-export"))==null||N.addEventListener("click",async()=>{if(this.noteId)try{await this.api.exportNote(this.noteId,"markdown")}catch(O){alert("Export failed: "+O.message)}}),(Z=L.querySelector("#btn-delete"))==null||Z.addEventListener("click",async()=>{if(this.noteId&&confirm("Are you sure you want to delete this note?"))try{await this.api.deleteNote(this.noteId),window.location.hash="#/editor"}catch(O){alert("Delete failed: "+O.message)}})}escapeHtml(L){return L.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}}class Pi{constructor(L,x){me(this,"api");me(this,"router");me(this,"initialized",!1);this.api=L,this.router=x}async render(){const L=await this.api.getAuthStatus().catch(()=>({initialized:!1}));this.initialized=(L==null?void 0:L.initialized)??!1;const x=document.createElement("div");x.className="login-view";const B="NoteMG",N=this.initialized?"请输入密码继续 / Enter password to continue":"设置密码开始使用 / Set password to get started",Z=this.initialized?"密码 / Password":"设置密码 / Set Password",O=this.initialized?"输入密码 / Enter password":"至少6个字符 / At least 6 characters",y="确认密码 / Confirm Password",C="再次输入密码 / Confirm password",D=this.initialized?"登录 / Sign In":"初始化 / Initialize",A="密码至少6个字符 / Password must be at least 6 characters",c="密码不一致 / Passwords do not match",l="认证失败 / Authentication failed";return x.innerHTML=`
       <div class="login-card">
-        <h1>NoteMG</h1>
-        <p>${this.initialized?"Enter your password to continue":"Set your password to get started"}</p>
+        <h1>${B}</h1>
+        <p>${N}</p>
         <form id="login-form">
           ${this.initialized?`
             <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="password" placeholder="Enter password" autofocus />
+              <label>${Z}</label>
+              <input type="password" id="password" placeholder="${O}" autofocus />
             </div>
           `:`
             <div class="form-group">
-              <label>Set Password</label>
-              <input type="password" id="password" placeholder="At least 6 characters" autofocus />
+              <label>${Z}</label>
+              <input type="password" id="password" placeholder="${O}" autofocus />
             </div>
             <div class="form-group">
-              <label>Confirm Password</label>
-              <input type="password" id="password-confirm" placeholder="Confirm password" />
+              <label>${y}</label>
+              <input type="password" id="password-confirm" placeholder="${C}" />
             </div>
           `}
-          <button type="submit" class="btn btn-primary">
-            ${this.initialized?"Sign In":"Initialize"}
-          </button>
+          <button type="submit" class="btn btn-primary">${D}</button>
         </form>
       </div>
-    `,x.querySelector("#login-form").addEventListener("submit",async B=>{var Z;B.preventDefault();const N=x.querySelector("#password").value;if(!N||N.length<6){alert("Password must be at least 6 characters");return}try{if(this.initialized)await this.api.login(N);else{const O=(Z=x.querySelector("#password-confirm"))==null?void 0:Z.value;if(N!==O){alert("Passwords do not match");return}await this.api.init(N)}this.router.navigate("editor")}catch(O){alert(O.message||"Authentication failed")}}),x}}class Ii{constructor(L,x){me(this,"api");me(this,"query");this.api=L,this.query=x}async render(){const L=document.createElement("div");L.className="search-view",L.innerHTML=`
+    `,x.querySelector("#login-form").addEventListener("submit",async g=>{var m;g.preventDefault();const p=x.querySelector("#password").value;if(!p||p.length<6){alert(A);return}try{if(this.initialized)await this.api.login(p);else{const d=(m=x.querySelector("#password-confirm"))==null?void 0:m.value;if(p!==d){alert(c);return}await this.api.init(p)}this.router.navigate("editor")}catch(d){alert(d.message||l)}}),x}}class Ii{constructor(L,x){me(this,"api");me(this,"query");this.api=L,this.query=x}async render(){const L=document.createElement("div");L.className="search-view",L.innerHTML=`
       <h2>Search</h2>
       <input type="text" class="search-input" placeholder="Search notes..." value="${this.escapeAttr(this.query||"")}" autofocus />
       <div class="search-results scrollbar"></div>

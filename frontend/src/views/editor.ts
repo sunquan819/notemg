@@ -82,6 +82,11 @@ export class EditorView {
         inlineDigit: true,
         engine: 'KaTeX',
       },
+      hljs: {
+        enable: true,
+        lineNumber: true,
+        style: 'native',
+      },
       toolbar: [
         'headings', 'bold', 'italic', 'strike', '|',
         'list', 'ordered-list', 'check', 'outdent', 'indent', '|',

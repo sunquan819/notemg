@@ -370,13 +370,98 @@ input:focus, textarea:focus {
 
 .editor-container .vditor-ir .vditor-reset pre code {
   color: var(--text-primary) !important;
+  background: transparent !important;
+  display: block !important;
+  overflow-x: auto !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
 }
 
 .editor-container .vditor-ir .vditor-reset pre {
-  background: var(--bg-secondary) !important;
+  background: #1a1a2e !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius) !important;
   padding: 16px !important;
+  margin: 16px 0 !important;
+  overflow-x: auto !important;
+}
+
+.editor-container .vditor-ir pre.vditor-input {
+  background: #1a1a2e !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  padding: 16px !important;
+}
+
+.editor-container .vditor-ir pre.vditor-input::before,
+.editor-container .vditor-ir .vditor-reset pre::before {
+  content: '' !important;
+}
+
+.editor-container .vditor-sv {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.editor-container .vditor-sv textarea {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #6c7086 !important;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+  color: #cba6f7 !important;
+}
+
+.hljs-number,
+.hljs-string,
+.hljs-meta .hljs-meta-string,
+.hljs-regexp,
+.hljs-link {
+  color: #a6e3a1 !important;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #f9e2af !important;
+}
+
+.hljs-type,
+.hljs-class .hljs-title,
+.hljs-built_in,
+.hljs-variable,
+.hljs-template-variable {
+  color: #89b4fa !important;
+}
+
+.hljs-function {
+  color: #f38ba8 !important;
+}
+
+.hljs-deletion {
+  color: #f38ba8 !important;
+}
+
+.hljs-attribute,
+.hljs-attr {
+  color: #fab387 !important;
 }
 
 .editor-container .vditor-ir .vditor-reset blockquote {

@@ -26,6 +26,11 @@ declare module 'vditor' {
       inlineDigit?: boolean;
       engine?: string;
     };
+    hljs?: {
+      enable?: boolean;
+      lineNumber?: boolean;
+      style?: string;
+    };
     toolbar?: (string | number)[];
     upload?: {
       url?: string;

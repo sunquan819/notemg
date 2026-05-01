@@ -16,13 +16,17 @@ type Route struct {
 }
 
 type Router struct {
-	routes      []Route
+	routes      *[]Route
 	middlewares []Middleware
 	prefix      string
 }
 
 func newRouter() *Router {
-	return &Router{}
+	routes := make([]Route, 0)
+	return &Router{
+		routes:      &routes,
+		middlewares: make([]Middleware, 0),
+	}
 }
 
 func (r *Router) Group(prefix string) *Router {
@@ -59,24 +63,45 @@ func (r *Router) addRoute(method, path string, handler http.HandlerFunc) {
 	for i := len(r.middlewares) - 1; i >= 0; i-- {
 		h = r.middlewares[i](h)
 	}
-	r.routes = append(r.routes, Route{method: method, path: fullPath, handler: h})
+	*r.routes = append(*r.routes, Route{method: method, path: fullPath, handler: h})
 }
 
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
 
-	for _, route := range r.routes {
+	var wildcardMatch *Route
+	var wildcardParams map[string]string
+
+	for i := range *r.routes {
+		route := (*r.routes)[i]
 		if route.method != req.Method {
 			continue
 		}
 
-		if matched, params := matchPath(route.path, path); matched {
-			if len(params) > 0 {
-				req = httputil.WithParams(req, params)
-			}
-			route.handler.ServeHTTP(w, req)
-			return
+		matched, params := matchPath(route.path, path)
+		if !matched {
+			continue
 		}
+
+		if route.path == "/*" || strings.HasSuffix(route.path, "/*") {
+			wildcardMatch = &route
+			wildcardParams = params
+			continue
+		}
+
+		if len(params) > 0 {
+			req = httputil.WithParams(req, params)
+		}
+		route.handler.ServeHTTP(w, req)
+		return
+	}
+
+	if wildcardMatch != nil {
+		if len(wildcardParams) > 0 {
+			req = httputil.WithParams(req, wildcardParams)
+		}
+		wildcardMatch.handler.ServeHTTP(w, req)
+		return
 	}
 
 	errJSON := `{"success":false,"error":{"code":404,"message":"Not found"}}`

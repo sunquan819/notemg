@@ -17,6 +17,18 @@ declare module 'vditor' {
     value?: string;
     cache?: { enable?: boolean };
     toolbar?: (string | number)[];
+    options?: {
+      markdown?: {
+        toc?: boolean;
+        mark?: boolean;
+        footnotes?: boolean;
+        autoSpace?: boolean;
+      };
+      math?: {
+        inlineDigit?: boolean;
+        engine?: string;
+      };
+    };
     upload?: {
       url?: string;
       headers?: Record<string, string>;

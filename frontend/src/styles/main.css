@@ -325,6 +325,121 @@ input:focus, textarea:focus {
 .editor-container .vditor {
   border: none !important;
   height: 100% !important;
+  background: var(--bg-primary) !important;
+}
+
+.editor-container .vditor-ir {
+  background: var(--bg-primary) !important;
+}
+
+.editor-container .vditor-ir pre.vditor-input {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset {
+  color: var(--text-primary) !important;
+  background: var(--bg-primary) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset p,
+.editor-container .vditor-ir .vditor-reset div,
+.editor-container .vditor-ir .vditor-reset span {
+  color: var(--text-primary) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset h1,
+.editor-container .vditor-ir .vditor-reset h2,
+.editor-container .vditor-ir .vditor-reset h3,
+.editor-container .vditor-ir .vditor-reset h4,
+.editor-container .vditor-ir .vditor-reset h5,
+.editor-container .vditor-ir .vditor-reset h6 {
+  color: var(--accent) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset code {
+  background: var(--bg-tertiary) !important;
+  color: var(--warning) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-family: var(--font-mono) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset pre code {
+  color: var(--text-primary) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset pre {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 16px !important;
+}
+
+.editor-container .vditor-ir .vditor-reset blockquote {
+  background: var(--bg-tertiary) !important;
+  border-left: 4px solid var(--accent) !important;
+  color: var(--text-secondary) !important;
+  padding: 12px 16px !important;
+  margin: 16px 0 !important;
+}
+
+.editor-container .vditor-ir .vditor-reset a {
+  color: var(--accent) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset table th {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset table td {
+  border: 1px solid var(--border) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset table tr:nth-child(even) td {
+  background: var(--bg-secondary) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset hr {
+  border-color: var(--border) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset img {
+  max-width: 100% !important;
+  border-radius: var(--radius) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset ul,
+.editor-container .vditor-ir .vditor-reset ol {
+  color: var(--text-primary) !important;
+}
+
+.editor-container .vditor-ir .vditor-reset li {
+  color: var(--text-primary) !important;
+}
+
+.editor-container .vditor-toolbar {
+  background: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 8px 16px !important;
+}
+
+.editor-container .vditor-toolbar button {
+  color: var(--text-secondary) !important;
+}
+
+.editor-container .vditor-toolbar button:hover {
+  color: var(--accent) !important;
+  background: var(--bg-tertiary) !important;
+}
+
+.editor-container .vditor-toolbar button.vditor-menu--current {
+  color: var(--accent) !important;
+  background: var(--bg-tertiary) !important;
 }
 
 .editor-container .vditor-reset {

@@ -67,7 +67,7 @@ export class EditorView {
       mode: 'ir',
       theme: 'dark',
       icon: 'ant',
-      placeholder: 'Start writing...',
+      placeholder: '开始写作... / Start writing...',
       value: this.note?.content || '',
       cache: {
         enable: false,
@@ -75,17 +75,29 @@ export class EditorView {
       toolbar: [
         'headings', 'bold', 'italic', 'strike', '|',
         'list', 'ordered-list', 'check', 'outdent', 'indent', '|',
-        'quote', 'code', 'inline-code', '|',
-        'link', 'upload', 'table', '|',
+        'quote', 'code', 'inline-code', 'inline-math', '|',
+        'link', 'upload', 'table', 'math', '|',
         'undo', 'redo', '|',
-        'fullscreen', 'edit-mode',
+        'fullscreen', 'edit-mode', 'preview',
       ],
+      options: {
+        markdown: {
+          toc: true,
+          mark: true,
+          footnotes: true,
+          autoSpace: true,
+        },
+        math: {
+          inlineDigit: true,
+          engine: 'KaTeX',
+        },
+      },
       upload: {
         url: '/api/attachments/upload',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
-        accept: 'image/*',
+        accept: 'image/*,.pdf,.doc,.docx',
         handler: async (files: File[]) => {
           for (const file of files) {
             try {

@@ -16,19 +16,17 @@ declare module 'vditor' {
     placeholder?: string;
     value?: string;
     cache?: { enable?: boolean };
-    toolbar?: (string | number)[];
-    options?: {
-      markdown?: {
-        toc?: boolean;
-        mark?: boolean;
-        footnotes?: boolean;
-        autoSpace?: boolean;
-      };
-      math?: {
-        inlineDigit?: boolean;
-        engine?: string;
-      };
+    markdown?: {
+      toc?: boolean;
+      mark?: boolean;
+      footnotes?: boolean;
+      autoSpace?: boolean;
     };
+    math?: {
+      inlineDigit?: boolean;
+      engine?: string;
+    };
+    toolbar?: (string | number)[];
     upload?: {
       url?: string;
       headers?: Record<string, string>;

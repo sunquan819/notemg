@@ -72,6 +72,16 @@ export class EditorView {
       cache: {
         enable: false,
       },
+      markdown: {
+        toc: true,
+        mark: true,
+        footnotes: true,
+        autoSpace: true,
+      },
+      math: {
+        inlineDigit: true,
+        engine: 'KaTeX',
+      },
       toolbar: [
         'headings', 'bold', 'italic', 'strike', '|',
         'list', 'ordered-list', 'check', 'outdent', 'indent', '|',
@@ -80,18 +90,6 @@ export class EditorView {
         'undo', 'redo', '|',
         'fullscreen', 'edit-mode', 'preview',
       ],
-      options: {
-        markdown: {
-          toc: true,
-          mark: true,
-          footnotes: true,
-          autoSpace: true,
-        },
-        math: {
-          inlineDigit: true,
-          engine: 'KaTeX',
-        },
-      },
       upload: {
         url: '/api/attachments/upload',
         headers: {

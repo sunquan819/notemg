@@ -374,7 +374,8 @@ input:focus, textarea:focus {
   display: block !important;
   overflow-x: auto !important;
   font-size: 14px !important;
-  line-height: 1.5 !important;
+  line-height: 1.6 !important;
+  padding: 0 !important;
 }
 
 .editor-container .vditor-ir .vditor-reset pre {
@@ -384,6 +385,7 @@ input:focus, textarea:focus {
   padding: 16px !important;
   margin: 16px 0 !important;
   overflow-x: auto !important;
+  color: var(--text-primary) !important;
 }
 
 .editor-container .vditor-ir pre.vditor-input {
@@ -393,13 +395,50 @@ input:focus, textarea:focus {
   border-radius: var(--radius) !important;
   font-family: var(--font-mono) !important;
   font-size: 14px !important;
-  line-height: 1.5 !important;
+  line-height: 1.6 !important;
   padding: 16px !important;
+  margin: 0 !important;
 }
 
 .editor-container .vditor-ir pre.vditor-input::before,
 .editor-container .vditor-ir .vditor-reset pre::before {
   content: '' !important;
+}
+
+.editor-container .vditor-ir .vditor-ir__node[data-type="code-block"] {
+  background: #1a1a2e !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 16px !important;
+  margin: 16px 0 !important;
+}
+
+.editor-container .vditor-ir .vditor-ir__node[data-type="code-block"] .vditor-ir__marker {
+  color: var(--text-muted) !important;
+  font-size: 12px !important;
+}
+
+.editor-container .vditor-ir .vditor-ir__node[data-type="code-block"] pre {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.editor-container .vditor-ir .vditor-ir__node[data-type="code-block"] code {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+  font-family: var(--font-mono) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  padding: 0 !important;
+}
+
+.editor-container .vditor-ir .vditor-ir__node[data-type="code-block"] .vditor-ir__marker--pre {
+  color: var(--text-muted) !important;
+  font-size: 12px !important;
+  margin-bottom: 8px !important;
+  display: block !important;
 }
 
 .editor-container .vditor-sv {

@@ -823,3 +823,170 @@ input:focus, textarea:focus {
     transform: translateX(0);
   }
 }
+
+.drive-view {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.drive-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.drive-header h2 {
+  font-size: 18px;
+}
+
+.drive-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.drive-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.drive-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.breadcrumb-item {
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.breadcrumb-item:hover {
+  color: var(--accent-hover);
+}
+
+.breadcrumb-sep {
+  color: var(--text-muted);
+}
+
+.drive-search {
+  width: 240px;
+}
+
+.drive-search input {
+  width: 100%;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+.drive-content {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  padding: 8px;
+}
+
+.drive-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.drive-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+
+.drive-item:hover {
+  border-color: var(--accent);
+  background: var(--bg-tertiary);
+}
+
+.drive-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+}
+
+.drive-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin-bottom: 8px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius);
+}
+
+.drive-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+
+.drive-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.preview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.preview-content {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.preview-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

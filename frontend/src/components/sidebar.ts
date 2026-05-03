@@ -30,7 +30,7 @@ export class Sidebar {
 
     const bottom = document.createElement('div');
     bottom.className = 'sidebar-bottom';
-    bottom.innerHTML = '<button class="btn btn-ghost btn-sm" id="nav-tags">Tags</button><button class="btn btn-ghost btn-sm" id="nav-search">Search</button><button class="btn btn-ghost btn-sm" id="nav-settings">Settings</button><button class="btn btn-ghost btn-sm" id="nav-logout" style="color:var(--danger);margin-left:auto">Logout</button>';
+    bottom.innerHTML = '<button class="btn btn-ghost btn-sm" id="nav-drive" title="Drive">&#x1F4BE;</button><button class="btn btn-ghost btn-sm" id="nav-tags">Tags</button><button class="btn btn-ghost btn-sm" id="nav-search">Search</button><button class="btn btn-ghost btn-sm" id="nav-settings">Settings</button><button class="btn btn-ghost btn-sm" id="nav-logout" style="color:var(--danger);margin-left:auto">Logout</button>';
 
     el.appendChild(header);
     el.appendChild(search);
@@ -72,6 +72,10 @@ export class Sidebar {
       if (q) {
         window.location.hash = '#/search?q=' + encodeURIComponent(q);
       }
+    });
+
+    el.querySelector('#nav-drive')?.addEventListener('click', () => {
+      window.location.hash = '#/drive';
     });
 
     el.querySelector('#nav-tags')?.addEventListener('click', () => {

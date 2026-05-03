@@ -96,19 +96,32 @@ export class EditorView {
         'fullscreen', 'edit-mode', 'preview',
       ],
       upload: {
-        url: '/api/attachments/upload',
+        url: '/api/notes/drive/upload',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
-        accept: 'image/*,.pdf,.doc,.docx',
+        accept: 'image/*,video/*,audio/*,.pdf,.doc,.docx,.zip',
         handler: async (files: File[]) => {
           for (const file of files) {
             try {
-              const result = await this.api.upload('/attachments/upload', file);
-              const imgMd = `![${file.name}](/api/attachments/${result.id})\n`;
-              vditorInstance?.insertValue(imgMd);
+              const result = await this.api.driveUpload(file, null);
+              const mime = result.mime_type || '';
+              if (mime.startsWith('image/')) {
+                const imgMd = `![${file.name}](/api/notes/drive/files/${result.id}/preview)\n`;
+                vditorInstance?.insertValue(imgMd);
+              } else if (mime.startsWith('video/')) {
+                const videoMd = `<video src="/api/notes/drive/files/${result.id}/preview" controls style="max-width:100%"></video>\n`;
+                vditorInstance?.insertValue(videoMd);
+              } else if (mime.startsWith('audio/')) {
+                const audioMd = `<audio src="/api/notes/drive/files/${result.id}/preview" controls></audio>\n`;
+                vditorInstance?.insertValue(audioMd);
+              } else {
+                const linkMd = `[${file.name}](/api/notes/drive/files/${result.id}/download)\n`;
+                vditorInstance?.insertValue(linkMd);
+              }
             } catch (err: any) {
               console.error('Upload failed:', err);
+              alert('上传失败 / Upload failed: ' + err.message);
             }
           }
           return null;

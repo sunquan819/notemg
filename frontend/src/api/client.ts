@@ -237,4 +237,48 @@ export class APIClient {
     localStorage.removeItem('refresh_token');
     window.location.hash = '#/login';
   }
+
+  async listDriveFiles(folderId: string | null): Promise<any> {
+    const qs = folderId ? '?parent_id=' + folderId : '';
+    return this.request('GET', '/drive/files' + qs);
+  }
+
+  async getDriveFile(id: string): Promise<any> {
+    return this.request('GET', '/drive/files/' + id);
+  }
+
+  async createDriveFolder(name: string, parentId: string | null): Promise<any> {
+    return this.request('POST', '/drive/folders', { name, parent_id: parentId });
+  }
+
+  async driveUpload(file: File, parentId: string | null): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (parentId) formData.append('parent_id', parentId);
+    return this.request('POST', '/drive/upload', formData);
+  }
+
+  async renameDriveFile(id: string, name: string): Promise<any> {
+    return this.request('PUT', '/drive/files/' + id, { name });
+  }
+
+  async moveDriveFile(id: string, parentId: string | null): Promise<any> {
+    return this.request('POST', '/drive/files/' + id + '/move', { parent_id: parentId });
+  }
+
+  async deleteDriveFile(id: string): Promise<any> {
+    return this.request('DELETE', '/drive/files/' + id);
+  }
+
+  async searchDrive(query: string): Promise<any> {
+    return this.request('GET', '/drive/search?q=' + encodeURIComponent(query));
+  }
+
+  getDrivePreviewUrl(id: string): string {
+    return this.baseUrl + '/drive/files/' + id + '/preview';
+  }
+
+  getDriveDownloadUrl(id: string): string {
+    return this.baseUrl + '/drive/files/' + id + '/download';
+  }
 }

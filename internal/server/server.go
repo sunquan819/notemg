@@ -17,16 +17,17 @@ import (
 )
 
 type Server struct {
-	cfg      *config.Config
-	server   *http.Server
-	auth     *security.Auth
-	dbStore  *store.Store
-	noteSt   *store.NoteStore
-	folderSt *store.FolderStore
-	tagSt    *store.TagStore
-	md       *markdown.Engine
-	searcher *search.Searcher
-	frontFS  embed.FS
+	cfg       *config.Config
+	server    *http.Server
+	auth      *security.Auth
+	dbStore   *store.Store
+	noteSt    *store.NoteStore
+	folderSt  *store.FolderStore
+	tagSt     *store.TagStore
+	driveSt   *store.DriveStore
+	md        *markdown.Engine
+	searcher  *search.Searcher
+	frontFS   embed.FS
 }
 
 func New(cfg *config.Config, frontFS embed.FS) *Server {
@@ -52,6 +53,10 @@ func (s *Server) Start() error {
 	s.noteSt = store.NewNoteStore(s.dbStore.DB(), s.cfg)
 	s.folderSt = store.NewFolderStore(s.dbStore.DB())
 	s.tagSt = store.NewTagStore(s.dbStore.DB())
+	s.driveSt = store.NewDriveStore(s.dbStore.DB(), s.cfg)
+	if err := s.driveSt.Init(); err != nil {
+		log.Printf("Warning: drive init failed: %v", err)
+	}
 	s.md = markdown.NewEngine()
 
 	s.searcher, err = search.NewSearcher(s.cfg.IndexPath())
@@ -152,6 +157,19 @@ func (s *Server) setupRouter() http.Handler {
 	notes.Post("/import/zip", ieH.ImportZip)
 	notes.Get("/export/notes/{id}", ieH.ExportNote)
 	notes.Post("/export/batch", ieH.ExportBatch)
+
+	driveH := handler.NewDriveHandler(s.driveSt, s.cfg)
+	notes.Get("/drive/files", driveH.List)
+	notes.Post("/drive/folders", driveH.CreateFolder)
+	notes.Post("/drive/upload", driveH.Upload)
+	notes.Get("/drive/files/{id}", driveH.Get)
+	notes.Get("/drive/files/{id}/preview", driveH.Preview)
+	notes.Get("/drive/files/{id}/download", driveH.Download)
+	notes.Get("/drive/files/{id}/thumbnail", driveH.Thumbnail)
+	notes.Put("/drive/files/{id}", driveH.Rename)
+	notes.Post("/drive/files/{id}/move", driveH.Move)
+	notes.Delete("/drive/files/{id}", driveH.Delete)
+	notes.Get("/drive/search", driveH.Search)
 
 	spaFS, err := fs.Sub(s.frontFS, "frontend/dist")
 	if err != nil {

@@ -5,6 +5,7 @@ import { LoginView } from './views/login';
 import { SearchView } from './views/search';
 import { TagsView } from './views/tags';
 import { SettingsView } from './views/settings';
+import { DriveView } from './views/drive';
 import { Sidebar } from './components/sidebar';
 import { Toast } from './components/toast';
 
@@ -83,6 +84,15 @@ export class App {
         return;
       }
       const view = new SettingsView(this.api);
+      this.renderView(view);
+    });
+
+    this.router.addRoute('drive', async () => {
+      if (!this.api.isAuthenticated()) {
+        this.router.navigate('login');
+        return;
+      }
+      const view = new DriveView(this.api);
       this.renderView(view);
     });
 

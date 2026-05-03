@@ -162,14 +162,12 @@ export class DriveView {
   private renderFileItem(f: any): string {
     const icon = this.getFileIcon(f);
     const size = f.type === 'folder' ? '' : this.formatSize(f.size);
-    const thumb = f.thumb_path && f.type === 'file' && f.mime_type?.startsWith('image/')
-      ? '<img class="drive-thumb" src="/api/notes/drive/files/' + f.id + '/thumbnail" />'
-      : '';
+    const isImage = f.type === 'file' && f.mime_type?.startsWith('image/');
 
     return `
       <div class="drive-item" data-id="${f.id}" data-type="${f.type}">
-        ${thumb || '<div class="drive-icon">' + icon + '</div>'}
-        <div class="drive-name">${this.escapeHtml(f.name)}</div>
+        ${isImage ? '<div class="drive-thumb-wrapper"><img class="drive-thumb" src="/api/notes/drive/files/' + f.id + '/preview" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" /><div class="drive-icon" style="display:none">' + icon + '</div></div>' : '<div class="drive-icon">' + icon + '</div>'}
+        <div class="drive-name" title="${this.escapeHtml(f.name)}">${this.escapeHtml(f.name)}</div>
         <div class="drive-meta">${size}</div>
       </div>
     `;
@@ -205,62 +203,265 @@ export class DriveView {
     const url = '/api/notes/drive/files/' + id + '/preview';
 
     if (mime.startsWith('image/')) {
-      this.showImagePreview(url, file.name);
+      this.showImagePreview(url, file.name, file.size);
     } else if (mime.startsWith('video/')) {
-      this.showVideoPreview(url, file.name);
+      this.showVideoPreview(url, file.name, file.size);
+    } else if (mime.startsWith('audio/')) {
+      this.showAudioPreview(url, file.name, file.size);
     } else if (mime === 'application/pdf') {
       this.showPdfPreview(url, file.name);
+    } else if (mime.startsWith('text/') || mime === 'application/json' || mime === 'application/xml') {
+      this.showTextPreview(url, file.name);
     } else {
       this.downloadFile(id, file.name);
     }
   }
 
-  private showImagePreview(url: string, name: string) {
+  private showImagePreview(url: string, name: string, size: number) {
     const modal = document.createElement('div');
     modal.className = 'preview-modal';
     modal.innerHTML = `
-      <div class="preview-content">
+      <div class="preview-content image-preview">
         <div class="preview-header">
-          <span>${this.escapeHtml(name)}</span>
-          <button class="btn btn-ghost btn-sm" id="close-preview">&times;</button>
+          <div class="preview-title">
+            <span class="preview-icon">&#x1F4F7;</span>
+            <span>${this.escapeHtml(name)}</span>
+            <span class="preview-size">${this.formatSize(size)}</span>
+          </div>
+          <div class="preview-actions">
+            <button class="btn btn-ghost btn-sm" id="btn-download" title="下载">&#x2B07;</button>
+            <button class="btn btn-ghost btn-sm" id="btn-zoom-in" title="放大">&#x2795;</button>
+            <button class="btn btn-ghost btn-sm" id="btn-zoom-out" title="缩小">&#x2796;</button>
+            <button class="btn btn-ghost btn-sm" id="btn-fit" title="适应">&#x2194;</button>
+            <button class="btn btn-ghost btn-sm" id="close-preview" title="关闭">&times;</button>
+          </div>
         </div>
         <div class="preview-body">
-          <img src="${url}" style="max-width:100%;max-height:80vh;" />
+          <img id="preview-image" src="${url}" style="max-width:100%;max-height:75vh;object-fit:contain;transition:transform 0.2s;" />
         </div>
       </div>
     `;
 
     document.body.appendChild(modal);
+    
+    let zoom = 1;
+    const img = modal.querySelector('#preview-image') as HTMLImageElement;
+    
     modal.querySelector('#close-preview')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#btn-download')?.addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+    });
+    modal.querySelector('#btn-zoom-in')?.addEventListener('click', () => {
+      zoom = Math.min(zoom + 0.25, 5);
+      img.style.transform = `scale(${zoom})`;
+    });
+    modal.querySelector('#btn-zoom-out')?.addEventListener('click', () => {
+      zoom = Math.max(zoom - 0.25, 0.25);
+      img.style.transform = `scale(${zoom})`;
+    });
+    modal.querySelector('#btn-fit')?.addEventListener('click', () => {
+      zoom = 1;
+      img.style.transform = 'scale(1)';
+    });
+    
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.remove();
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') modal.remove();
     });
   }
 
-  private showVideoPreview(url: string, name: string) {
+  private showVideoPreview(url: string, name: string, size: number) {
     const modal = document.createElement('div');
     modal.className = 'preview-modal';
     modal.innerHTML = `
-      <div class="preview-content">
+      <div class="preview-content video-preview">
         <div class="preview-header">
-          <span>${this.escapeHtml(name)}</span>
-          <button class="btn btn-ghost btn-sm" id="close-preview">&times;</button>
+          <div class="preview-title">
+            <span class="preview-icon">&#x1F3AC;</span>
+            <span>${this.escapeHtml(name)}</span>
+            <span class="preview-size">${this.formatSize(size)}</span>
+          </div>
+          <div class="preview-actions">
+            <button class="btn btn-ghost btn-sm" id="btn-download" title="下载">&#x2B07;</button>
+            <button class="btn btn-ghost btn-sm" id="close-preview" title="关闭">&times;</button>
+          </div>
         </div>
         <div class="preview-body">
-          <video src="${url}" controls style="max-width:100%;max-height:80vh;"></video>
+          <video id="preview-video" src="${url}" controls autoplay style="max-width:100%;max-height:75vh;border-radius:8px;"></video>
         </div>
       </div>
     `;
 
     document.body.appendChild(modal);
+    
     modal.querySelector('#close-preview')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#btn-download')?.addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+    });
+    
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.remove();
     });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') modal.remove();
+    });
+  }
+
+  private showAudioPreview(url: string, name: string, size: number) {
+    const modal = document.createElement('div');
+    modal.className = 'preview-modal';
+    modal.innerHTML = `
+      <div class="preview-content audio-preview">
+        <div class="preview-header">
+          <div class="preview-title">
+            <span class="preview-icon">&#x1F3B5;</span>
+            <span>${this.escapeHtml(name)}</span>
+            <span class="preview-size">${this.formatSize(size)}</span>
+          </div>
+          <div class="preview-actions">
+            <button class="btn btn-ghost btn-sm" id="btn-download" title="下载">&#x2B07;</button>
+            <button class="btn btn-ghost btn-sm" id="close-preview" title="关闭">&times;</button>
+          </div>
+        </div>
+        <div class="preview-body">
+          <div class="audio-player">
+            <div class="audio-icon">&#x1F3B5;</div>
+            <div class="audio-name">${this.escapeHtml(name)}</div>
+            <audio id="preview-audio" src="${url}" controls autoplay style="width:100%;margin-top:16px;"></audio>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    
+    modal.querySelector('#close-preview')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#btn-download')?.addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+    });
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') modal.remove();
+    });
+  }
+
+  private async showTextPreview(url: string, name: string) {
+    try {
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+      });
+      const text = await response.text();
+      
+      const modal = document.createElement('div');
+      modal.className = 'preview-modal';
+      modal.innerHTML = `
+        <div class="preview-content text-preview">
+          <div class="preview-header">
+            <div class="preview-title">
+              <span class="preview-icon">&#x1F4C4;</span>
+              <span>${this.escapeHtml(name)}</span>
+            </div>
+            <div class="preview-actions">
+              <button class="btn btn-ghost btn-sm" id="btn-copy" title="复制">&#x1F4CB;</button>
+              <button class="btn btn-ghost btn-sm" id="btn-download" title="下载">&#x2B07;</button>
+              <button class="btn btn-ghost btn-sm" id="close-preview" title="关闭">&times;</button>
+            </div>
+          </div>
+          <div class="preview-body">
+            <pre class="text-content">${this.escapeHtml(text)}</pre>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      
+      modal.querySelector('#close-preview')?.addEventListener('click', () => modal.remove());
+      modal.querySelector('#btn-download')?.addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        a.click();
+      });
+      modal.querySelector('#btn-copy')?.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(text);
+        const btn = modal.querySelector('#btn-copy');
+        if (btn) {
+          btn.textContent = '已复制';
+          setTimeout(() => { btn.textContent = '复制'; }, 2000);
+        }
+      });
+      
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') modal.remove();
+      });
+    } catch (err) {
+      alert('Failed to load text file');
+    }
   }
 
   private showPdfPreview(url: string, name: string) {
-    window.open(url, '_blank');
+    const modal = document.createElement('div');
+    modal.className = 'preview-modal';
+    modal.innerHTML = `
+      <div class="preview-content pdf-preview">
+        <div class="preview-header">
+          <div class="preview-title">
+            <span class="preview-icon">&#x1F4C4;</span>
+            <span>${this.escapeHtml(name)}</span>
+          </div>
+          <div class="preview-actions">
+            <button class="btn btn-ghost btn-sm" id="btn-open" title="新窗口打开">&#x2197;</button>
+            <button class="btn btn-ghost btn-sm" id="btn-download" title="下载">&#x2B07;</button>
+            <button class="btn btn-ghost btn-sm" id="close-preview" title="关闭">&times;</button>
+          </div>
+        </div>
+        <div class="preview-body">
+          <iframe src="${url}" style="width:100%;height:75vh;border:none;border-radius:8px;"></iframe>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    
+    modal.querySelector('#close-preview')?.addEventListener('click', () => modal.remove());
+    modal.querySelector('#btn-open')?.addEventListener('click', () => {
+      window.open(url, '_blank');
+    });
+    modal.querySelector('#btn-download')?.addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+    });
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') modal.remove();
+    });
   }
 
   private downloadFile(id: string, name: string) {
